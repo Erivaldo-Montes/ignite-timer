@@ -6,7 +6,7 @@ export function DefaultLayout() {
   return (
     <LayoutContainer>
       <Header />
-      {/* espaço reservado para cada rota */}
+      {/* será substituido pelo conteúdo da rota */}
       <Outlet />
     </LayoutContainer>
   )
