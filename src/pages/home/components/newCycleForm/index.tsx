@@ -1,6 +1,6 @@
 import { FormContainer, MinutesAmountInput, TaskImput } from './styles'
 import { useContext } from 'react'
-import { CycleContext } from '../../index'
+import { CycleContext } from '../../../../contexts/CyclesContext'
 import { useFormContext } from 'react-hook-form'
 
 export function NewCycleForm() {
@@ -34,6 +34,8 @@ export function NewCycleForm() {
         id="minutesAmout"
         placeholder="00"
         max={60}
+        min={5}
+        step={5}
         disabled={!!activeCycle}
         {...register('minutesAmount', { valueAsNumber: true })}
       />
