@@ -39,9 +39,14 @@ export function Home() {
     },
   })
 
-  const { handleSubmit, watch /* reset */ } = newCycleForm
+  const { handleSubmit, watch, reset } = newCycleForm
 
   // ============================================================================
+
+  function handleCreateNewCycle(data: newCycleFormData) {
+    createNewCycle(data)
+    reset()
+  }
 
   // observa o input com o nome  'task' em tempo real sem renderizar
   const task = watch('task')
@@ -66,7 +71,7 @@ export function Home() {
             disabled={isDisabledSubmit}
             type="submit"
             // o função de criar um novo ciclo é repassada para o handle para que o useForm seja criado
-            onClick={handleSubmit(createNewCycle)}
+            onClick={handleSubmit(handleCreateNewCycle)}
           >
             <Play size={24} />
             Começar
