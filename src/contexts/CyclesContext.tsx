@@ -1,11 +1,18 @@
-import { createContext, ReactNode, useState, useReducer } from 'react'
-import { Cycle, cycleReducer } from '../reducers/cycle/reducer'
+import {
+  createContext,
+  ReactNode,
+  useState,
+  useReducer,
+  useEffect,
+} from 'react'
+import { Cycle, cyclesReducer } from '../reducers/cycle/reducer'
 import {
   addNewCycleAction,
   interruptCycleAction,
   markCurrentCycleAsFineshedAction,
   ActionTypes,
 } from '../reducers/cycle/action'
+import { differenceInSeconds } from 'date-fns'
 interface CreateCyclesDate {
   task: string
   minutesAmount: number
@@ -33,18 +40,46 @@ export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
   // usado para quardar informações mais complexas e alterar os dados
-  const [cyclesState, dispatch] = useReducer(cycleReducer, {
-    cycles: [],
-    activeCycleId: null,
-  })
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducer,
+    {
+      cycle: [],
+      activeCycleId: null,
+    },
+    () => {
+      const storedStateAsJson = localStorage.getItem(
+        '@ignite-timer:state-cycle-1.0.0',
+      )
+
+      if (storedStateAsJson) {
+        return JSON.parse(storedStateAsJson)
+      }
+
+      return { cycles: [], activeCycleId: null }
+    },
+  )
+
+  useEffect(() => {
+    const stateJson = JSON.stringify(cyclesState)
+
+    localStorage.setItem('@ignite-timer:state-cycle-1.0.0', stateJson)
+  }, [cyclesState])
 
   const { cycles, activeCycleId } = cyclesState
-  console.log(cycles)
-
-  // armazena os segundos que foram passados
-  const [amountSecondsPassed, setamountSecondsPassed] = useState(0)
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  // armazena os segundos que foram passados
+  const [amountSecondsPassed, setamountSecondsPassed] = useState(() => {
+    if (activeCycleId) {
+      const secondsDifference = differenceInSeconds(
+        new Date(),
+        new Date(activeCycle.startDate),
+      )
+    }
+
+    return 0
+  })
 
   function setSecondsPassaed(seconds: number) {
     setamountSecondsPassed(seconds)
